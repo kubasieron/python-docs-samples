@@ -1,18 +1,3 @@
-# Copyright 2020 Google LLC
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
-# [START composer_metadb_cleanup]
 """
 A maintenance workflow that you can deploy into Airflow to periodically clean
 out the DagRun, TaskInstance, Log, XCom, Job DB and SlaMiss entries to avoid
@@ -237,7 +222,7 @@ print_configuration = PythonOperator(
 
 
 def build_query(session, airflow_db_model, age_check_column, max_date,
-                keep_last, keep_last_filters=None, keep_last_group_by=None):
+    keep_last, keep_last_filters=None, keep_last_group_by=None):
 
     query = session.query(airflow_db_model).options(
         load_only(age_check_column))
@@ -332,7 +317,7 @@ def cleanup_function(**context):
             dags = session.query(airflow_db_model.dag_id).distinct()
             session.commit()
 
-            list_dags = [str(list(dag)[0]) for dag in dags]
+            list_dags = [str(list(dag)[0]) for dag in dags] + [None]
             for dag in list_dags:
                 query = build_query(session, airflow_db_model, age_check_column,
                                     max_date, keep_last, keep_last_filters,
@@ -355,7 +340,7 @@ def cleanup_function(**context):
         logging.error(e)
         logging.error(
             str(airflow_db_model) + " is not present in the metadata. "
-            "Skipping...")
+                                    "Skipping...")
 
     finally:
         session.close()
@@ -384,5 +369,3 @@ for db_object in DATABASE_OBJECTS:
 
     print_configuration.set_downstream(cleanup_op)
     cleanup_op.set_downstream(analyze_op)
-
-# [END composer_metadb_cleanup]

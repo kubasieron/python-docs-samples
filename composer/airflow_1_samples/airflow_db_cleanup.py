@@ -86,6 +86,7 @@ ALERT_EMAIL_ADDRESSES = []
 AIRFLOW_VERSION = airflow_version[:-len("+composer")].split(".")
 # Length to retain the log files if not already provided in the conf. If this
 # is set to 30, the job will remove those files that arE 30 days old or older.
+
 DEFAULT_MAX_DB_ENTRY_AGE_IN_DAYS = int(
     Variable.get("airflow_db_cleanup__max_db_entry_age_in_days", 30))
 # Prints the database entries which will be getting deleted; set to False
@@ -259,6 +260,7 @@ def print_configuration_function(**context):
     logging.info("max_db_entry_age_in_days: " + str(max_db_entry_age_in_days))
     logging.info("max_date:                 " + str(max_date))
     logging.info("enable_delete:            " + str(ENABLE_DELETE))
+    logging.info("session:                  " + str(session))
     logging.info("")
 
     logging.info("Setting max_execution_date to XCom for Downstream Processes")
