@@ -222,7 +222,7 @@ print_configuration = PythonOperator(
 
 
 def build_query(session, airflow_db_model, age_check_column, max_date,
-    keep_last, keep_last_filters=None, keep_last_group_by=None):
+                keep_last, keep_last_filters=None, keep_last_group_by=None):
 
     query = session.query(airflow_db_model).options(
         load_only(age_check_column))
